@@ -2,23 +2,28 @@ package edu.icet.repository;
 
 import edu.icet.config.AppConfig;
 import edu.icet.model.User;
+import edu.icet.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@ExtendWith(SpringExtension.class) // Integrates Spring with JUnit 5
-@ContextConfiguration(classes = {AppConfig.class}) // Tells the test which config to load
-@Transactional // Automatically rolls back database changes after each test
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {AppConfig.class})
+@Transactional
 public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Test
     public void testSaveAndFindByUsername() {
@@ -45,5 +50,30 @@ public class UserRepositoryTest {
         Assertions.assertEquals("Tester", foundUser.getRole());
 
         System.out.println("Successfully saved and retrieved user: " + foundUser.getUsername());
+    }
+
+    @Test
+    @Rollback(false)
+    public void createAdminUser() {
+        try {
+            User admin = userService.registerUser("admin", "admin123", "Admin");
+            Assertions.assertNotNull(admin);
+            System.out.println("Admin user created or already exists.");
+        } catch (RuntimeException e) {
+            // This will catch if the user 'admin' already exists
+            System.out.println(e.getMessage());
+            System.out.println("Assuming admin user 'admin' already exists. Proceeding.");
+
+            Optional<User> userOpt = userRepository.findByUsername("admin");
+            if (userOpt.isPresent()) {
+                User existingAdmin = userOpt.get();
+
+                System.out.println("Forcing password reset for admin...");
+                userRepository.delete(existingAdmin);
+                User admin = userService.registerUser("admin", "admin123", "Admin");
+                Assertions.assertNotNull(admin);
+                System.out.println("Admin user password has been reset.");
+            }
+        }
     }
 }
