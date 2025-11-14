@@ -51,9 +51,8 @@ public class LoginController {
         Optional<User> userOpt = userService.authenticateUser(username, password);
 
         if (userOpt.isPresent()) {
-            // Login Successful!
-            // 8. CALL THE NEW NAVIGATION METHOD
-            showMedicineManagementScreen();
+            // Login Successful
+            showMainScreen();
         } else {
             // Login Failed
             errorLabel.setTextFill(javafx.scene.paint.Color.RED);
@@ -61,13 +60,11 @@ public class LoginController {
         }
     }
 
-    private void showMedicineManagementScreen() {
+    private void showMainScreen() {
         try {
-            // Get the current stage (window) from the login button
             Stage stage = (Stage) loginButton.getScene().getWindow();
 
-            // Load the FXML file for the medicine management screen
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/MedicineManagement.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/Dashboard.fxml"));
 
             //  Set the controller factory to use Spring
             fxmlLoader.setControllerFactory(springContext::getBean);
@@ -77,13 +74,13 @@ public class LoginController {
             // Create a new scene and set it on the stage
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("MedSync - Medicine Management");
+            stage.setTitle("MedSync - Dashboard");
             stage.setResizable(true);
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            errorLabel.setText("Failed to load management screen.");
+            errorLabel.setText("Failed to dashboard.");
         }
     }
 }
