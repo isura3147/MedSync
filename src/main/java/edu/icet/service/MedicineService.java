@@ -78,4 +78,24 @@ public class MedicineService {
         }
         medicineRepository.deleteById(id);
     }
+
+    /**
+     * Finds all medicines that are low on stock.
+     * @param threshold The stock level to check against (e.g., 10).
+     * @return A list of low-stock medicines.
+     */
+    public List<Medicine> getLowStockMedicines(int threshold) {
+        return medicineRepository.findByQuantityInStockLessThan(threshold);
+    }
+
+    /**
+     * Finds all medicines expiring soon (e.g., within the next 30 days).
+     * @param daysToExpiry The number of days to look ahead.
+     * @return A list of expiring medicines.
+     */
+    public List<Medicine> getMedicinesExpiringSoon(int daysToExpiry) {
+        LocalDate today = LocalDate.now();
+        LocalDate expiryDateLimit = today.plusDays(daysToExpiry);
+        return medicineRepository.findByExpiryDateBetween(today, expiryDateLimit);
+    }
 }
