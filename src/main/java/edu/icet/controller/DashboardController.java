@@ -2,20 +2,28 @@ package edu.icet.controller;
 
 import edu.icet.model.Medicine;
 import edu.icet.service.MedicineService;
+import edu.icet.service.ReportService;
+import edu.icet.util.QRCodeUtil;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -28,6 +36,15 @@ public class DashboardController {
 
     @Autowired
     private AnnotationConfigApplicationContext springContext;
+
+    @Autowired
+    private ReportService reportService;
+
+    @FXML
+    private Button reportsButton;
+
+    @FXML
+    private Button manageUsersButton;
 
     // --- Low Stock Table ---
     @FXML
@@ -76,12 +93,10 @@ public class DashboardController {
     @FXML
     private void onManageMedicineClick() {
         try {
-            // Load the FXML file for the medicine management screen
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/MedicineManagement.fxml"));
             fxmlLoader.setControllerFactory(springContext::getBean); // Use Spring to get the controller
             Parent root = fxmlLoader.load();
 
-            // Create a new stage (window) for the modal
             Stage stage = new Stage();
             stage.setTitle("Manage Medicines");
             stage.setScene(new Scene(root));
@@ -97,6 +112,67 @@ public class DashboardController {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onReportsButtonClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Inventory Report");
+        fileChooser.setInitialFileName("MedSync_Inventory_Report.pdf");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
+
+        // Get the current stage to show the dialog
+        Stage stage = (Stage) reportsButton.getScene().getWindow();
+        File file = fileChooser.showSaveDialog(stage);
+
+        if (file != null) {
+            try {
+                reportService.generateInventoryReport(file);
+
+                // Show success message
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Report Generated");
+                alert.setHeaderText("Success!");
+                alert.setContentText("Inventory report saved to: " + file.getAbsolutePath());
+                alert.showAndWait();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Show error message
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Report Error");
+                alert.setHeaderText("Failed to generate report.");
+                alert.setContentText("Error: " + e.getMessage());
+                alert.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    private void onManageUsersClick() {
+        try {
+            // Generate a sample QR code
+            String invoiceId = "INV-2025-1116-001";
+            Image qrImage = QRCodeUtil.generateQRCode(invoiceId, 200, 200);
+
+            // Show it in an alert dialog
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("QR Code Generator");
+            alert.setHeaderText("Successfully generated QR Code for:");
+            alert.setContentText(invoiceId);
+
+            // Set the image in the alert
+            ImageView imageView = new ImageView(qrImage);
+            alert.setGraphic(imageView);
+
+            alert.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle error
         }
     }
 }
