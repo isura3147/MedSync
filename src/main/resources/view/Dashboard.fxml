@@ -27,8 +27,8 @@
                 </Label>
                 <Button fx:id="dashboardButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="Dashboard" />
                 <Button fx:id="manageMedicineButton" mnemonicParsing="false" onAction="#onManageMedicineClick" prefHeight="40.0" prefWidth="180.0" text="Manage Medicines" />
-                <Button fx:id="manageUsersButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="Manage Users" />
-                <Button fx:id="reportsButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="Generate Reports" />
+                <Button fx:id="manageUsersButton" mnemonicParsing="false" onAction="#onManageUsersClick" prefHeight="40.0" prefWidth="180.0" text="Manage Users" />
+                <Button fx:id="reportsButton" mnemonicParsing="false" onAction="#onReportsButtonClick" prefHeight="40.0" prefWidth="180.0" text="Generate Reports" />
                 <Button fx:id="profileButton" layoutX="20.0" layoutY="184.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="User Profile" />
             </children>
         </VBox>
