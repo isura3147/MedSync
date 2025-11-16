@@ -2,6 +2,7 @@ package edu.icet.controller;
 
 import edu.icet.model.User;
 import edu.icet.service.UserService;
+import edu.icet.service.SessionService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -37,6 +38,9 @@ public class LoginController {
     private UserService userService;
 
     @Autowired
+    private SessionService sessionService;
+
+    @Autowired
     private AnnotationConfigApplicationContext springContext;
 
     public void onLoginButtonClick() {
@@ -52,6 +56,7 @@ public class LoginController {
 
         if (userOpt.isPresent()) {
             // Login Successful
+            sessionService.setLoggedInUser(userOpt.get());
             showMainScreen();
         } else {
             // Login Failed

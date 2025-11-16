@@ -46,6 +46,9 @@ public class DashboardController {
     @FXML
     private Button manageUsersButton;
 
+    @FXML
+    private Button profileButton;
+
     // --- Low Stock Table ---
     @FXML
     private TableView<Medicine> lowStockTable;
@@ -175,4 +178,25 @@ public class DashboardController {
             // Handle error
         }
     }
+
+    @FXML
+    private void onProfileClick() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/UserProfile.fxml"));
+            fxmlLoader.setControllerFactory(springContext::getBean);
+            Parent root = fxmlLoader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("User Profile");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            loadAlerts();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

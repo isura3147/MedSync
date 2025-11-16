@@ -63,4 +63,11 @@ public class UserService {
 
         return userRepository.save(newUser);
     }
+
+    public User updateUser(User user) {
+        if (user.getId() == null) {
+            throw new RuntimeException("User must have an ID to be updated.");
+        }
+        return userRepository.save(user);
+    }
 }
