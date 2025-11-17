@@ -20,7 +20,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -31,24 +31,21 @@ import java.util.List;
 @Component
 public class DashboardController {
 
+    // Constants for alerts
+    private static final int LOW_STOCK_THRESHOLD = 10;
+    private static final int EXPIRY_DAYS_THRESHOLD = 30;
     @Autowired
     private MedicineService medicineService;
-
     @Autowired
-    private AnnotationConfigApplicationContext springContext;
-
+    private ApplicationContext springContext;
     @Autowired
     private ReportService reportService;
-
     @FXML
     private Button reportsButton;
-
     @FXML
     private Button manageUsersButton;
-
     @FXML
     private Button profileButton;
-
     // --- Low Stock Table ---
     @FXML
     private TableView<Medicine> lowStockTable;
@@ -56,7 +53,6 @@ public class DashboardController {
     private TableColumn<Medicine, String> lowStockNameCol;
     @FXML
     private TableColumn<Medicine, Integer> lowStockQtyCol;
-
     // --- Expiry Table ---
     @FXML
     private TableView<Medicine> expiryTable;
@@ -64,10 +60,6 @@ public class DashboardController {
     private TableColumn<Medicine, String> expiryNameCol;
     @FXML
     private TableColumn<Medicine, LocalDate> expiryDateCol;
-
-    // Constants for alerts
-    private static final int LOW_STOCK_THRESHOLD = 10;
-    private static final int EXPIRY_DAYS_THRESHOLD = 30;
 
     @FXML
     public void initialize() {

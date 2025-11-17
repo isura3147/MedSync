@@ -1,8 +1,8 @@
 package edu.icet.controller;
 
 import edu.icet.model.User;
-import edu.icet.service.UserService;
 import edu.icet.service.SessionService;
+import edu.icet.service.UserService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class LoginController {
     private SessionService sessionService;
 
     @Autowired
-    private AnnotationConfigApplicationContext springContext;
+    private ApplicationContext springContext;
 
     public void onLoginButtonClick() {
         String username = usernameField.getText();
